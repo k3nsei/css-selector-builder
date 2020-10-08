@@ -24,6 +24,7 @@
     "emit-declarations": "tsc --emitDeclarationOnly",
     "format:check": "prettier --check .",
     "format:fix": "prettier --write .",
+    "lint": "echo \"to be implemented\"",
     "test": "jest --config=./jest.config.js",
     "test:coverage": "yarn run test --coverage",
     "prewatch": "rimraf ./dist",
