@@ -26,14 +26,19 @@ export interface AttributeNode {
   value?: string;
 }
 
-export interface NthChildNode {
-  kind: 'nth-child';
-  position: number;
-}
-
 export interface AtIndexNode {
   kind: 'at-index';
-  index: number;
+  value: number;
+}
+
+export interface NthChildNode {
+  kind: 'nth-child';
+  value: number | string | 'odd' | 'even';
+}
+
+export interface NthOfTypeNode {
+  kind: 'nth-of-type';
+  value: number | string | 'odd' | 'even';
 }
 
 export type CombineNodeSeparator = '' | ' ' | '>';
@@ -50,6 +55,7 @@ export type Node =
   | ClassNode
   | ElementNode
   | AttributeNode
-  | NthChildNode
   | AtIndexNode
+  | NthChildNode
+  | NthOfTypeNode
   | CombineNode;
