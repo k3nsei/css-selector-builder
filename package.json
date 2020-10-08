@@ -17,43 +17,56 @@
     "url": "https://github.com/k3nsei"
   },
   "main": "dist/index.js",
+  "browser": "dist/browser.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "prebuild": "rimraf ./dist",
-    "build": "concurrently \"parcel build ./src/index.ts\" \"yarn run emit-declarations\"",
-    "check-types": "tsc --noEmit",
-    "emit-declarations": "tsc --emitDeclarationOnly",
-    "format:check": "prettier --check .",
+    "build": "parcel build ./src/index.ts --cache-dir .cache/parcel",
+    "build:watch": "parcel watch ./src/index.ts --cache-dir .cache/parcel",
+    "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "lint": "echo \"to be implemented\"",
-    "test": "jest --config=./jest.config.js",
-    "test:coverage": "yarn run test --coverage",
-    "prewatch": "rimraf ./dist",
-    "watch": "concurrently \"parcel watch ./src/index.ts\" \"yarn run emit-declarations --watch\""
+    "test": "jest",
+    "test:coverage": "jest --coverage",
+    "types-check": "tsc --noEmit",
+    "types-check:watch": "tsc --noEmit --watch"
   },
   "devDependencies": {
-    "@babel/core": "7.11.6",
-    "@babel/preset-env": "7.11.5",
-    "@babel/preset-typescript": "7.10.4",
     "@commitlint/cli": "11.0.0",
     "@commitlint/config-conventional": "11.0.0",
-    "@types/jest": "^26.0.14",
+    "@parcel/validator-typescript": "2.0.0-alpha.3",
+    "@types/jest": "26.0.14",
     "@types/node": "^14.11.5",
-    "babel-jest": "26.5.2",
-    "concurrently": "5.3.0",
     "husky": "4.3.0",
     "jest": "26.5.2",
     "lint-staged": "10.4.0",
-    "parcel-bundler": "1.12.4",
+    "parcel": "2.0.0-beta.1",
     "prettier": "2.1.2",
     "prettier-plugin-organize-imports": "1.1.1",
     "prettier-plugin-packagejson": "2.2.6",
-    "rimraf": "^3.0.2",
+    "ts-jest": "26.4.1",
     "typedoc": "0.19.2",
     "typescript": "4.0.3"
   },
   "engines": {
-    "node": "14.13.0",
+    "node": ">=12.0.0",
     "npm": "please-use-yarn",
     "yarn": "1.22.10"
+  },
+  "targets": {
+    "main": {
+      "context": "node",
+      "outputFormat": "commonjs",
+      "isLibrary": true
+    },
+    "module": {
+      "context": "node",
+      "outputFormat": "esmodule",
+      "isLibrary": true
+    },
+    "browser": {
+      "context": "browser",
+      "outputFormat": "esmodule",
+      "isLibrary": true
+    }
   }
 }

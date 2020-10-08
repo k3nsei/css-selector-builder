@@ -3,16 +3,16 @@
     "baseUrl": "./src",
     "outDir": "./dist",
     "target": "ES2015",
-    "module": "ESNext",
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "lib": ["ESNext"],
-    "declaration": true,
-    "declarationMap": true,
+    "esModuleInterop": true,
     "strict": true,
     "noImplicitAny": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
     "types": ["node", "jest"]
   },
-  "files": ["./src/index.ts"]
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }
