@@ -56,7 +56,8 @@ describe('CssSelector', () => {
         b.id('root'),
         b.join(b.class('child'), b.eq(0)),
         b.join(b.element('button'), b.nthChild(3), b.attribute('disabled', '=', 'disabled')),
-        b.append(b.join(b.element('span'), b.class('label')), b.join(b.element('i'), b.class('icon'))),
+        b.join(b.element('span'), b.class('label')),
+        b.join(b.element('i'), b.class('icon')),
       )
       .stringify();
 
