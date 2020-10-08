@@ -1,6 +1,7 @@
 module.exports = {
-  rootDir: './src',
+  preset: 'ts-jest',
   testEnvironment: 'node',
+  rootDir: './src',
   clearMocks: true,
   coverageDirectory: '<rootDir>/../coverage',
   coverageProvider: 'v8',

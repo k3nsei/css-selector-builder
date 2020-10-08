@@ -20,16 +20,23 @@ jobs:
         uses: actions/setup-node@v2-beta
         with:
           node-version: '${{ steps.nvm.outputs.NODE_VERSION }}'
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-modules-${{ hashFiles('**/yarn.lock') }}
       - name: Install dependencies
-        run: yarn install
+        run: yarn install --frozen-lockfile
       - name: Check code formatting
         run: yarn run format:check
       - name: Lint
         run: yarn run lint
+      - name: Check types
+        run: yarn run types-check
       - name: Build
         run: yarn run build
       - name: Test
-        run: yarn run test
+        run: yarn run test:coverage --ci --silent --forceExit
       - name: Upload coverage
         uses: codecov/codecov-action@v1.0.0
         with:
