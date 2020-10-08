@@ -10,6 +10,7 @@ import type {
   IdNode,
   Node,
   NthChildNode,
+  NthOfTypeNode,
 } from './node';
 import { assertInvalidNode } from './utils/assert-invalid-node';
 
@@ -17,14 +18,14 @@ const EMPTY_NODE: EmptyNode = {
   kind: 'empty',
 };
 
-export class CssSelectorStringifier {
+export class CssSelectorStringConverter {
   #node: Node;
 
   constructor(node: Node) {
     this.#node = node;
   }
 
-  public stringify(): string {
+  public toString(): string {
     return this.stringifyNode(this.#node);
   }
 
@@ -44,6 +45,8 @@ export class CssSelectorStringifier {
         return this.eq(node);
       case 'nth-child':
         return this.nthChild(node);
+      case 'nth-of-type':
+        return this.nthOfType(node);
       case 'combine':
         return this.combine(node);
       default:
@@ -74,11 +77,15 @@ export class CssSelectorStringifier {
   }
 
   private eq(node: AtIndexNode): string {
-    return `:nth-child(${node.index + 1})`;
+    return `:nth-child(${node.value + 1})`;
   }
 
   private nthChild(node: NthChildNode): string {
-    return `:nth-child(${node.position})`;
+    return `:nth-child(${node.value})`;
+  }
+
+  private nthOfType(node: NthOfTypeNode): string {
+    return `:nth-of-type(${node.value})`;
   }
 
   private combine(node: CombineNode): string {
@@ -93,11 +100,15 @@ export class CssSelector {
     return this.#node;
   }
 
-  public static create(node: Node = EMPTY_NODE): CssSelector {
+  public static create(): CssSelector {
+    return new CssSelector(EMPTY_NODE);
+  }
+
+  private static from(node: Node = EMPTY_NODE): CssSelector {
     return new CssSelector(node);
   }
 
-  private static flatMapNodes(builders: CssSelector[]): Node[] {
+  private static flatMap(builders: CssSelector[]): Node[] {
     return builders.reduce((nodes: Node[], builder: CssSelector): Node[] => {
       return nodes.concat(builder.node);
     }, []);
@@ -107,8 +118,8 @@ export class CssSelector {
     this.#node = node;
   }
 
-  public stringify(): string {
-    return new CssSelectorStringifier(this.node).stringify();
+  public toString(): string {
+    return new CssSelectorStringConverter(this.node).toString();
   }
 
   public id(value: string): CssSelector {
@@ -117,7 +128,7 @@ export class CssSelector {
       value,
     };
 
-    return CssSelector.create(node);
+    return CssSelector.from(node);
   }
 
   public class(value: string): CssSelector {
@@ -126,7 +137,7 @@ export class CssSelector {
       value,
     };
 
-    return CssSelector.create(node);
+    return CssSelector.from(node);
   }
 
   public element(value: string): CssSelector {
@@ -135,7 +146,7 @@ export class CssSelector {
       value,
     };
 
-    return CssSelector.create(node);
+    return CssSelector.from(node);
   }
 
   public attribute(attr: string, operator: AttributeNodeOperator = '=', value?: string): CssSelector {
@@ -146,25 +157,34 @@ export class CssSelector {
       value,
     };
 
-    return CssSelector.create(node);
+    return CssSelector.from(node);
   }
 
-  public eq(index: number): CssSelector {
+  public eq(value: number): CssSelector {
     const node: AtIndexNode = {
       kind: 'at-index',
-      index,
+      value,
     };
 
-    return CssSelector.create(node);
+    return CssSelector.from(node);
   }
 
-  public nthChild(position: number): CssSelector {
+  public nthChild(value: number | string | 'odd' | 'even'): CssSelector {
     const node: NthChildNode = {
       kind: 'nth-child',
-      position,
+      value,
     };
 
-    return CssSelector.create(node);
+    return CssSelector.from(node);
+  }
+
+  public nthOfType(value: number | string | 'odd' | 'even'): CssSelector {
+    const node: NthOfTypeNode = {
+      kind: 'nth-of-type',
+      value,
+    };
+
+    return CssSelector.from(node);
   }
 
   public append(head: CssSelector, ...tail: CssSelector[]): CssSelector {
@@ -179,11 +199,11 @@ export class CssSelector {
     const node: CombineNode = {
       kind: 'combine',
       separator,
-      children: [head.node].concat(CssSelector.flatMapNodes(tail)),
+      children: [head.node].concat(CssSelector.flatMap(tail)),
     };
 
     this.#node = node;
 
-    return CssSelector.create(node);
+    return CssSelector.from(node);
   }
 }
