@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
-        uses: actions/checkout@master
+        uses: actions/checkout@v2
       - name: Read .nvmrc
         id: nvm
         run: echo "##[set-output name=NODE_VERSION;]$(cat .nvmrc)"
