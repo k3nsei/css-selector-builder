@@ -37,7 +37,7 @@
     "@types/jest": "26.0.14",
     "@types/node": "14.11.8",
     "husky": "4.3.0",
-    "jest": "26.5.2",
+    "jest": "26.5.3",
     "lint-staged": "10.4.0",
     "parcel": "2.0.0-nightly.420",
     "prettier": "2.1.2",
