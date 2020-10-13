@@ -39,7 +39,7 @@
     "husky": "4.3.0",
     "jest": "26.5.2",
     "lint-staged": "10.4.0",
-    "parcel": "2.0.0-nightly.420",
+    "parcel": "2.0.0-nightly.424",
     "prettier": "2.1.2",
     "prettier-plugin-organize-imports": "1.1.1",
     "prettier-plugin-packagejson": "2.2.6",
