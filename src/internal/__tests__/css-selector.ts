@@ -1,7 +1,8 @@
 import { CssSelector } from '../css-selector';
+import { Node } from '../node';
 
 describe('CssSelector', () => {
-  let b: CssSelector;
+  let b: CssSelector<Node>;
 
   beforeEach(() => {
     b = CssSelector.create();
@@ -66,6 +67,20 @@ describe('CssSelector', () => {
   it('Should nth-of-type selector match', () => {
     const expected: string = 'div:nth-of-type(3n+0)';
     const result: string = b.join(b.element('div'), b.nthOfType('3n+0')).toString();
+
+    expect(result).toBe(expected);
+  });
+
+  it('Should not selector match', () => {
+    const expected: string = ':not(.blue)';
+    const result: string = b.not(b.class('blue')).toString();
+
+    expect(result).toBe(expected);
+  });
+
+  it('Should combined not selector match', () => {
+    const expected: string = 'div:not(.red)';
+    const result: string = b.join(b.element('div'), b.not(b.class('red'))).toString();
 
     expect(result).toBe(expected);
   });

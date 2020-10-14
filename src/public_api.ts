@@ -1,2 +1,32 @@
 export { CssSelector } from './internal/css-selector';
-export * from './internal/node';
+export type { CssSelectorToStringConverter } from './internal/css-selector-to-string-converter';
+export type {
+  ActiveNode,
+  AtIndexNode,
+  AttributeNode,
+  AttributeNodeOperator,
+  CheckedNode,
+  ClassNode,
+  CombineNode,
+  CombineNodeSeparator,
+  DisabledNode,
+  ElementNode,
+  EmptyNode,
+  EnabledNode,
+  FirstChildNode,
+  FirstNodeNode,
+  FocusNode,
+  HoverNode,
+  IdNode,
+  InvalidNode,
+  LastChildNode,
+  LastNodeNode,
+  Node,
+  NotNode,
+  NthChildNode,
+  NthOfTypeNode,
+  RequiredNode,
+  RootElementNode,
+  ValidNode,
+  VisitedNode,
+} from './internal/node';

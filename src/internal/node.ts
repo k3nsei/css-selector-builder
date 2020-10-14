@@ -12,6 +12,10 @@ export interface ClassNode {
   value: string;
 }
 
+export interface RootElementNode {
+  kind: 'root';
+}
+
 export interface ElementNode {
   kind: 'element';
   value: string;
@@ -26,9 +30,57 @@ export interface AttributeNode {
   value?: string;
 }
 
+export interface ActiveNode {
+  kind: 'active';
+}
+
+export interface HoverNode {
+  kind: 'hover';
+}
+
+export interface VisitedNode {
+  kind: 'visited';
+}
+
+export interface FocusNode {
+  kind: 'focus';
+}
+
+export interface CheckedNode {
+  kind: 'checked';
+}
+
+export interface RequiredNode {
+  kind: 'required';
+}
+
+export interface ValidNode {
+  kind: 'valid';
+}
+
+export interface InvalidNode {
+  kind: 'invalid';
+}
+
+export interface DisabledNode {
+  kind: 'disabled';
+}
+
+export interface EnabledNode {
+  kind: 'enabled';
+}
+
 export interface AtIndexNode {
   kind: 'at-index';
   value: number;
+}
+
+export interface FirstChildNode {
+  kind: 'first-child';
+}
+
+export interface LastChildNode {
+  kind: 'last-child';
 }
 
 export interface NthChildNode {
@@ -36,9 +88,22 @@ export interface NthChildNode {
   value: number | string | 'odd' | 'even';
 }
 
+export interface FirstNodeNode {
+  kind: 'first-node';
+}
+
+export interface LastNodeNode {
+  kind: 'last-node';
+}
+
 export interface NthOfTypeNode {
   kind: 'nth-of-type';
   value: number | string | 'odd' | 'even';
+}
+
+export interface NotNode {
+  kind: 'not';
+  child: Node;
 }
 
 export type CombineNodeSeparator = '' | ' ' | '>';
@@ -53,9 +118,25 @@ export type Node =
   | EmptyNode
   | IdNode
   | ClassNode
+  | RootElementNode
   | ElementNode
   | AttributeNode
+  | ActiveNode
+  | HoverNode
+  | VisitedNode
+  | FocusNode
+  | CheckedNode
+  | RequiredNode
+  | ValidNode
+  | InvalidNode
+  | DisabledNode
+  | EnabledNode
   | AtIndexNode
+  | FirstChildNode
+  | LastChildNode
   | NthChildNode
+  | FirstNodeNode
+  | LastNodeNode
   | NthOfTypeNode
+  | NotNode
   | CombineNode;

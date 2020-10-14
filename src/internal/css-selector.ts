@@ -1,209 +1,168 @@
+import { EMPTY_NODE } from './constants/empty-node';
+import { CssSelectorToStringConverter } from './css-selector-to-string-converter';
 import type {
+  ActiveNode,
   AtIndexNode,
   AttributeNode,
   AttributeNodeOperator,
+  CheckedNode,
   ClassNode,
   CombineNode,
   CombineNodeSeparator,
+  DisabledNode,
   ElementNode,
   EmptyNode,
+  EnabledNode,
+  FirstChildNode,
+  FirstNodeNode,
+  FocusNode,
+  HoverNode,
   IdNode,
+  InvalidNode,
+  LastChildNode,
+  LastNodeNode,
   Node,
+  NotNode,
   NthChildNode,
   NthOfTypeNode,
+  RequiredNode,
+  RootElementNode,
+  ValidNode,
+  VisitedNode,
 } from './node';
-import { assertInvalidNode } from './utils/assert-invalid-node';
 
-const EMPTY_NODE: EmptyNode = {
-  kind: 'empty',
-};
+export class CssSelector<T extends Node> {
+  #node: T;
 
-export class CssSelectorStringConverter {
-  #node: Node;
-
-  constructor(node: Node) {
-    this.#node = node;
-  }
-
-  public toString(): string {
-    return this.stringifyNode(this.#node);
-  }
-
-  private stringifyNode(node: Node): string {
-    switch (node.kind) {
-      case 'empty':
-        return this.empty();
-      case 'id':
-        return this.id(node);
-      case 'class':
-        return this.class(node);
-      case 'element':
-        return this.element(node);
-      case 'attribute':
-        return this.attribute(node);
-      case 'at-index':
-        return this.eq(node);
-      case 'nth-child':
-        return this.nthChild(node);
-      case 'nth-of-type':
-        return this.nthOfType(node);
-      case 'combine':
-        return this.combine(node);
-      default:
-        return assertInvalidNode(node);
-    }
-  }
-
-  private empty(): string {
-    return '';
-  }
-
-  private id(node: IdNode): string {
-    return `#${node.value}`;
-  }
-
-  private class(node: ClassNode): string {
-    return `.${node.value}`;
-  }
-
-  private element(node: ElementNode): string {
-    return `${node.value}`;
-  }
-
-  private attribute(node: AttributeNode): string {
-    const value: string = node.operator && node.value ? `${node.operator}"${node.value}"` : '';
-
-    return `[${node.attr}${value}]`;
-  }
-
-  private eq(node: AtIndexNode): string {
-    return `:nth-child(${node.value + 1})`;
-  }
-
-  private nthChild(node: NthChildNode): string {
-    return `:nth-child(${node.value})`;
-  }
-
-  private nthOfType(node: NthOfTypeNode): string {
-    return `:nth-of-type(${node.value})`;
-  }
-
-  private combine(node: CombineNode): string {
-    return node.children.map((childNode: Node): string => this.stringifyNode(childNode)).join(node.separator);
-  }
-}
-
-export class CssSelector {
-  #node: Node;
-
-  public get node(): Node {
-    return this.#node;
-  }
-
-  public static create(): CssSelector {
+  public static create(): CssSelector<EmptyNode> {
     return new CssSelector(EMPTY_NODE);
   }
 
-  private static from(node: Node = EMPTY_NODE): CssSelector {
+  private static from<T extends Node>(node: T): CssSelector<T> {
     return new CssSelector(node);
   }
 
-  private static flatMap(builders: CssSelector[]): Node[] {
-    return builders.reduce((nodes: Node[], builder: CssSelector): Node[] => {
-      return nodes.concat(builder.node);
-    }, []);
-  }
-
-  private constructor(node: Node) {
+  private constructor(node: T) {
     this.#node = node;
   }
 
   public toString(): string {
-    return new CssSelectorStringConverter(this.node).toString();
+    return new CssSelectorToStringConverter(this.#node).toString();
   }
 
-  public id(value: string): CssSelector {
-    const node: IdNode = {
-      kind: 'id',
-      value,
-    };
-
-    return CssSelector.from(node);
+  public id(value: string): CssSelector<IdNode> {
+    return CssSelector.from({ kind: 'id', value });
   }
 
-  public class(value: string): CssSelector {
-    const node: ClassNode = {
-      kind: 'class',
-      value,
-    };
-
-    return CssSelector.from(node);
+  public class(value: string): CssSelector<ClassNode> {
+    return CssSelector.from({ kind: 'class', value });
   }
 
-  public element(value: string): CssSelector {
-    const node: ElementNode = {
-      kind: 'element',
-      value,
-    };
-
-    return CssSelector.from(node);
+  public root(): CssSelector<RootElementNode> {
+    return CssSelector.from({ kind: 'root' });
   }
 
-  public attribute(attr: string, operator: AttributeNodeOperator = '=', value?: string): CssSelector {
-    const node: AttributeNode = {
-      kind: 'attribute',
-      attr,
-      operator,
-      value,
-    };
-
-    return CssSelector.from(node);
+  public element(value: string): CssSelector<ElementNode> {
+    return CssSelector.from({ kind: 'element', value });
   }
 
-  public eq(value: number): CssSelector {
-    const node: AtIndexNode = {
-      kind: 'at-index',
-      value,
-    };
-
-    return CssSelector.from(node);
+  public attribute(attr: string, operator: AttributeNodeOperator = '=', value?: string): CssSelector<AttributeNode> {
+    return CssSelector.from({ kind: 'attribute', attr, operator, value });
   }
 
-  public nthChild(value: number | string | 'odd' | 'even'): CssSelector {
-    const node: NthChildNode = {
-      kind: 'nth-child',
-      value,
-    };
-
-    return CssSelector.from(node);
+  public active(): CssSelector<ActiveNode> {
+    return CssSelector.from({ kind: 'active' });
   }
 
-  public nthOfType(value: number | string | 'odd' | 'even'): CssSelector {
-    const node: NthOfTypeNode = {
-      kind: 'nth-of-type',
-      value,
-    };
-
-    return CssSelector.from(node);
+  public hover(): CssSelector<HoverNode> {
+    return CssSelector.from({ kind: 'hover' });
   }
 
-  public append(head: CssSelector, ...tail: CssSelector[]): CssSelector {
-    return this.combine(' ', head, tail);
+  public visited(): CssSelector<VisitedNode> {
+    return CssSelector.from({ kind: 'visited' });
   }
 
-  public join(head: CssSelector, ...tail: CssSelector[]): CssSelector {
-    return this.combine('', head, tail);
+  public focus(): CssSelector<FocusNode> {
+    return CssSelector.from({ kind: 'focus' });
   }
 
-  private combine(separator: CombineNodeSeparator, head: CssSelector, tail: CssSelector[]): CssSelector {
-    const node: CombineNode = {
+  public checked(): CssSelector<CheckedNode> {
+    return CssSelector.from({ kind: 'checked' });
+  }
+
+  public required(): CssSelector<RequiredNode> {
+    return CssSelector.from({ kind: 'required' });
+  }
+
+  public valid(): CssSelector<ValidNode> {
+    return CssSelector.from({ kind: 'valid' });
+  }
+
+  public invalid(): CssSelector<InvalidNode> {
+    return CssSelector.from({ kind: 'invalid' });
+  }
+
+  public disabled(): CssSelector<DisabledNode> {
+    return CssSelector.from({ kind: 'disabled' });
+  }
+
+  public enabled(): CssSelector<EnabledNode> {
+    return CssSelector.from({ kind: 'enabled' });
+  }
+
+  public eq(value: number): CssSelector<AtIndexNode> {
+    return CssSelector.from({ kind: 'at-index', value });
+  }
+
+  public firstChild(): CssSelector<FirstChildNode> {
+    return CssSelector.from({ kind: 'first-child' });
+  }
+
+  public lastChild(): CssSelector<LastChildNode> {
+    return CssSelector.from({ kind: 'last-child' });
+  }
+
+  public nthChild(value: number | string | 'odd' | 'even'): CssSelector<NthChildNode> {
+    return CssSelector.from({ kind: 'nth-child', value });
+  }
+
+  public firstNode(): CssSelector<FirstNodeNode> {
+    return CssSelector.from({ kind: 'first-node' });
+  }
+
+  public lastNode(): CssSelector<LastNodeNode> {
+    return CssSelector.from({ kind: 'last-node' });
+  }
+
+  public nthOfType(value: number | string | 'odd' | 'even'): CssSelector<NthOfTypeNode> {
+    return CssSelector.from({ kind: 'nth-of-type', value });
+  }
+
+  public not<T extends Node>(selector: CssSelector<T>): CssSelector<NotNode> {
+    return CssSelector.from({ kind: 'not', child: selector.#node });
+  }
+
+  public append(
+    firstSelector: CssSelector<Node>,
+    secondSelector: CssSelector<Node>,
+    ...otherSelectors: CssSelector<Node>[]
+  ): CssSelector<CombineNode> {
+    return this.combine(' ', [firstSelector, secondSelector].concat(otherSelectors));
+  }
+
+  public join(
+    firstSelector: CssSelector<Node>,
+    secondSelector: CssSelector<Node>,
+    ...otherSelectors: CssSelector<Node>[]
+  ): CssSelector<CombineNode> {
+    return this.combine('', [firstSelector, secondSelector].concat(otherSelectors));
+  }
+
+  private combine(separator: CombineNodeSeparator, selectors: CssSelector<Node>[]): CssSelector<CombineNode> {
+    return CssSelector.from({
       kind: 'combine',
       separator,
-      children: [head.node].concat(CssSelector.flatMap(tail)),
-    };
-
-    this.#node = node;
-
-    return CssSelector.from(node);
+      children: selectors.map((selector: CssSelector<Node>): Node => selector.#node),
+    });
   }
 }
