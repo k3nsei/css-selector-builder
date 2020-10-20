@@ -38,7 +38,7 @@ jobs:
       - name: Test
         run: yarn run test:coverage --ci --silent --forceExit
       - name: Upload coverage
-        uses: codecov/codecov-action@v1.0.0
+        uses: codecov/codecov-action@v1.0.14
         with:
           token: ${{secrets.CODECOV_TOKEN}}
           file: coverage/lcov.info
