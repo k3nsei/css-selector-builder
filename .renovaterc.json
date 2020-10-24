@@ -1,4 +1,26 @@
 {
   "extends": ["config:base", ":pinOnlyDevDependencies"],
-  "schedule": ["every weekend"]
+  "schedule": ["every weekend"],
+  "packageRules": [
+    {
+      "packagePatterns": ["^@commitlint"],
+      "groupName": "Commit Lint",
+      "groupSlug": "commitlint"
+    },
+    {
+      "packagePatterns": ["^@parcel", "^parcel"],
+      "groupName": "Parcel",
+      "groupSlug": "parcel"
+    },
+    {
+      "packagePatterns": ["jest$"],
+      "groupName": "Jest",
+      "groupSlug": "jest"
+    },
+    {
+      "packagePatterns": ["^prettier"],
+      "groupName": "Prettier",
+      "groupSlug": "prettier"
+    }
+  ]
 }
