@@ -2,10 +2,12 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "outDir": "./dist",
-    "target": "ES2015",
-    "module": "CommonJS",
+    "target": "ES2018",
+    "module": "ESNext",
     "moduleResolution": "node",
     "lib": ["ESNext"],
+    "declaration": true,
+    "emitDeclarationOnly": true,
     "esModuleInterop": true,
     "strict": true,
     "alwaysStrict": true,
@@ -19,5 +21,5 @@
     "types": ["node", "jest"]
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "**/__tests__/*.ts"]
 }

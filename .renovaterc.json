@@ -8,11 +8,6 @@
       "groupSlug": "commitlint"
     },
     {
-      "packagePatterns": ["^@parcel", "^parcel"],
-      "groupName": "Parcel",
-      "groupSlug": "parcel"
-    },
-    {
       "packagePatterns": ["jest$"],
       "groupName": "Jest",
       "groupSlug": "jest"
